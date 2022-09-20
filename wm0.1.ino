@@ -1,6 +1,10 @@
 /**
  * Autor: Valdecir (Black Chan) - 19/SET/2022
- * Código Arduino para automação de máquina de lavar com 5 relés do módulo com 8
+ * Código Arduino para automação de máquina de lavar com 5 relés;
+ * LCD screen;
+ * Two buttons controls;
+ * 3 estágios (lavagem/enxégue/amaciante);
+ * >>> Erro existente no nível 1 de água (evite esta opção por enquanto) <<<
  * Testado na máquina Consul Maré 7,5Kg
  * vvaldecirr@hotmail.com
  */
@@ -69,19 +73,19 @@ void encheBacia(int nivel, boolean bs, boolean ba) {
 
   // ligando bombas
   if (bs == true && ba == true) {
-    digitalWrite(amacianteB, LOW);
-    digitalWrite(sabaoB, LOW);
+    digitalWrite(amacianteB, HIGH);
+    digitalWrite(sabaoB, HIGH);
     delay(nivelBacia - 80000); // maior velocidade de enchimento
   } else if (bs == true) {
-    digitalWrite(sabaoB, LOW);
+    digitalWrite(sabaoB, HIGH);
     delay(nivelBacia);
   } else {
-    digitalWrite(amacianteB, LOW);
+    digitalWrite(amacianteB, HIGH);
     delay(nivelBacia);
   }
 
-  digitalWrite(amacianteB, HIGH);
-  digitalWrite(sabaoB, HIGH);
+  digitalWrite(amacianteB, LOW);
+  digitalWrite(sabaoB, LOW);
 }
 
 /**
@@ -109,14 +113,14 @@ void baterRoupas(int batidas, int ciclos, int modo) {
     for (int j = 0; j < batidas; j++) {
       int tempoRele = map(analogRead(pot), 0, 1023, 400, 1500); // ajuste fino do tempo pelo potenciômetro
 
-      digitalWrite(bateRoupasH, LOW);
-      delay(tempoRele);
       digitalWrite(bateRoupasH, HIGH);
+      delay(tempoRele);
+      digitalWrite(bateRoupasH, LOW);
       delay(pausa);
 
-      digitalWrite(bateRoupasA, LOW);
-      delay(tempoRele);
       digitalWrite(bateRoupasA, HIGH);
+      delay(tempoRele);
+      digitalWrite(bateRoupasA, LOW);
       delay(pausa);
     }
   
@@ -125,8 +129,8 @@ void baterRoupas(int batidas, int ciclos, int modo) {
       delay(tempoMolho);      
   }
   
-  digitalWrite(bateRoupasA, HIGH);
-  digitalWrite(bateRoupasH, HIGH);
+  digitalWrite(bateRoupasA, LOW);
+  digitalWrite(bateRoupasH, LOW);
 }
 
 /**
@@ -140,53 +144,53 @@ void escoarBacia(int modo) {
   
   switch (modo) {
     case 1:
-      digitalWrite(escoamentoB, LOW);
+      digitalWrite(escoamentoB, HIGH);
       delay(nivelBacia / divisor);
       break;
       
     case 2:
-      digitalWrite(escoamentoB, LOW);
+      digitalWrite(escoamentoB, HIGH);
       delay(nivelBacia / divisor);
       
       // Centrifugar com anti-desbalanço (sempre escoando)
-      digitalWrite(bateRoupasH, LOW);
-      delay(5000);
       digitalWrite(bateRoupasH, HIGH);
-      delay(7000);
-      digitalWrite(bateRoupasH, LOW);
       delay(5000);
-      digitalWrite(bateRoupasH, HIGH);
-      delay(7000);
       digitalWrite(bateRoupasH, LOW);
+      delay(7000);
+      digitalWrite(bateRoupasH, HIGH);
       delay(5000);
-      digitalWrite(bateRoupasH, HIGH);
-      delay(7000);
       digitalWrite(bateRoupasH, LOW);
+      delay(7000);
+      digitalWrite(bateRoupasH, HIGH);
+      delay(5000);
+      digitalWrite(bateRoupasH, LOW);
+      delay(7000);
+      digitalWrite(bateRoupasH, HIGH);
       delay(tempoCentrifuga);
       break;
       
     case 3:
-      digitalWrite(escoamentoB, LOW);
+      digitalWrite(escoamentoB, HIGH);
       delay(nivelBacia / divisor);
       
       // Centrifugar com anti-desbalanço (sempre escoando)
-      digitalWrite(bateRoupasH, LOW);
-      delay(5000);
       digitalWrite(bateRoupasH, HIGH);
-      delay(7000);
-      digitalWrite(bateRoupasH, LOW);
       delay(5000);
-      digitalWrite(bateRoupasH, HIGH);
-      delay(7000);
       digitalWrite(bateRoupasH, LOW);
+      delay(7000);
+      digitalWrite(bateRoupasH, HIGH);
       delay(5000);
-      digitalWrite(bateRoupasH, HIGH);
-      delay(7000);
       digitalWrite(bateRoupasH, LOW);
+      delay(7000);
+      digitalWrite(bateRoupasH, HIGH);
+      delay(5000);
+      digitalWrite(bateRoupasH, LOW);
+      delay(7000);
+      digitalWrite(bateRoupasH, HIGH);
       delay(tempoCentrifuga / 2);
       
       // Pré-enxague aprimorando a eliminação de sabão no escoamento
-      digitalWrite(sabaoB, LOW);
+      digitalWrite(sabaoB, HIGH);
       delay(tempoCentrifuga);
       break;
   }
@@ -194,9 +198,9 @@ void escoarBacia(int modo) {
   // Atualizando o nível de água na bacia
   nivelBacia = 0;
 
-  digitalWrite(escoamentoB, HIGH);
-  digitalWrite(bateRoupasH, HIGH);
-  digitalWrite(sabaoB, HIGH);
+  digitalWrite(escoamentoB, LOW);
+  digitalWrite(bateRoupasH, LOW);
+  digitalWrite(sabaoB, LOW);
 }
 
 /**
@@ -218,11 +222,11 @@ void setup() {
   pinMode(bateRoupasH, OUTPUT);
   pinMode(pot, INPUT);
 
-  digitalWrite(escoamentoB, HIGH);
-  digitalWrite(amacianteB, HIGH);
-  digitalWrite(sabaoB, HIGH);
-  digitalWrite(bateRoupasA, HIGH);
-  digitalWrite(bateRoupasH, HIGH);
+  digitalWrite(escoamentoB, LOW);
+  digitalWrite(amacianteB, LOW);
+  digitalWrite(sabaoB, LOW);
+  digitalWrite(bateRoupasA, LOW);
+  digitalWrite(bateRoupasH, LOW);
 
   // Splash screen
   lcd.init();
@@ -232,7 +236,7 @@ void setup() {
   lcd.clear();
   lcd.backlight();
   delay(500);
-  lcd.print(" LavaTRON  v1.1 ");
+  lcd.print(" LavaTRON 1.1.2 ");
   delay(1000);
   lcd.setCursor(0, 1);
   for (int i=0; i<16; i++) {
