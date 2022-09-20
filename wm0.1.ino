@@ -1,5 +1,5 @@
 /**
- * Autor: Valdecir (Black Chan) - 29/AGO/2020
+ * Autor: Valdecir (Black Chan) - 19/SET/2022
  * Código Arduino para automação de máquina de lavar com 5 relés do módulo com 8
  * Testado na máquina Consul Maré 7,5Kg
  * vvaldecirr@hotmail.com
@@ -54,16 +54,16 @@ byte centrifuga[8] = { B10001, B11111, B11011, B10001, B10101, B10001, B11011, B
 void encheBacia(int nivel, boolean bs, boolean ba) {
   switch (nivel) {
     case 1:
-      nivelBacia = 340000; // (5min e 40seg)
+      nivelBacia = 460000; // (7min e 40seg) // 340000; // (5min e 40seg)
       break;
     case 2:
-      nivelBacia = 435000; // (7min e 15seg)
+      nivelBacia = 555000; // (9min e 15seg) // 435000; // (7min e 15seg)
       break;
     case 3:
-      nivelBacia = 535000; // (8min e 55seg)
+      nivelBacia = 655000; // (10min e 55seg) // 535000; // (8min e 55seg)
       break;
     case 4:
-      nivelBacia = 665000; // (11min e 5seg)
+      nivelBacia = 785000; // (13min e 5seg) // 665000; // (11min e 5seg)
       break;
   }
 
@@ -237,8 +237,10 @@ void setup() {
   lcd.setCursor(0, 1);
   for (int i=0; i<16; i++) {
     lcd.write(byte(255));
-    delay(50);
+    delay(80);
   }
+  delay(700);
+  sel = true; // ir par a tela de seleção de nível de água automaticamente
   //lcd.noBacklight();
 }
 
@@ -246,6 +248,7 @@ void setup() {
  * FUNÇÃO PADRÃO DE CICLO DE EXECUÇÃO DO ARDUINO
  */
 void loop() {
+  
   // botão de confirmação
   readConf = digitalRead(confBtn);
   if (readConf == 1) {
@@ -609,5 +612,5 @@ void loop() {
         luz = true;
       }
     }
-  }      
+  }
 }
